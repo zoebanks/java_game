@@ -1,5 +1,7 @@
 package Game2;
 
+import javafx.animation.Animation;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -55,6 +57,16 @@ public class Board3 extends Application {
             }
         });
 
+        TimerDisplay timerDisplay=new TimerDisplay(10);
+        root.getChildren().add(timerDisplay);
+
+        AnimationTimer animationTimer= new AnimationTimer() {
+            @Override
+            public void handle(long l) {
+                timerDisplay.update(l);
+            }
+        };
+        animationTimer.start();
     }
     public static void main(String[] args) {
         launch(args);
