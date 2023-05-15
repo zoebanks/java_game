@@ -11,6 +11,8 @@ import javafx.scene.control.Label;
 public class TimerDisplay extends Pane {
 
     private int countdownSeconds = 10;
+    private Boolean isFinished = false;
+    private Boolean isWinner = false;
     public void startCountdown() {
         Timeline timeline = new Timeline();
         timeline.setCycleCount(countdownSeconds);
@@ -20,13 +22,28 @@ public class TimerDisplay extends Pane {
                 })
         );
         timeline.setOnFinished(event -> {
-            System.out.println("Countdown Complete!");
+            isFinished = true;
         });
         timeline.play();
     }
 
     public String getTimer() {
-        return "Timer: " + countdownSeconds;
+        if (isWinner) {
+            isFinished = true;
+            return "Got me! You win.";
+        }
+        else if (isFinished) {
+            return "Timer finished. You lose.";
+        }
+        else { return "Timer: " + countdownSeconds; }
+    }
+
+    public void foundCharacter() {
+        isWinner = true;
+    }
+
+    public Boolean roundLost() {
+        return isFinished && !isWinner;
     }
 }
  /*private final int totalTime = 10;
