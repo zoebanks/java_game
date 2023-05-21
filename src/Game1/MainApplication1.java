@@ -1,29 +1,22 @@
-package Game2;
+package Game1;
 
-import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
-public class MainApplication extends Application {
+public class MainApplication1 extends Application {
 
     private Stage instructionStage = new Stage();
-    private Stage board1Stage = new Stage();
-    private Stage board2Stage = new Stage();
-    private Stage board3Stage = new Stage();
     private Boolean startButtonClicked = false;
     public static void main(String[] args) { launch(args); }
 
-    //Board[] arrayOfBoards = new Board[3];
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -32,14 +25,12 @@ public class MainApplication extends Application {
         Text instrTitle = new Text("Instructions");
         instrTitle.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 30));
         Text instrDescription = new Text(
-                "\n\nIt's time for the annual \"Le Beauf\" party!" +
-                        "\nEveryone is dressed up in mustaches and hats except for Jade." +
-                        "\nFind Jade by correctly clicking on her character before the timer" +
-                        "\nruns out. There will be 3 rounds total and 10 seconds for each" +
-                        "\nround. Keep in mind that finding Jade will get more difficult as" +
-                        "\nmore students get to the party. You will only get 1 life. If the " +
-                        "\ntimer runs out during any of the rounds, you lose Game 2." +
-                        "\nClick the \"Start\" button below to begin." +
+                "\n\nIt's time for the annual \"La Passation\" party!" +
+                        "\nServe incoming students drinks at the bar. Move your character" +
+                        "\nright and left using the arrow keys. You have 30 seconds to prove" +
+                        "\nyour worth as a bartender. Deliver drinks by running into students." +
+                        "\nYou have 3 lives total. If a student leaves without a drink, you" +
+                        "\nlose one life." +
                         "\n\nGood luck!\n\n");
         instrDescription.setTextAlignment(TextAlignment.CENTER);
         instrDescription.setFont(Font.font("verdana", FontWeight.NORMAL, FontPosture.REGULAR, 20));
@@ -57,12 +48,7 @@ public class MainApplication extends Application {
         startButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                startButtonClicked = true;
-                instrStage.close();
-                Board round1 = new Board(1, 600);
-                //if (round1.getStatusLostGame()) { showLossScreen(); }
-                //instructions.close();
-                //instructions.hide();
+                //Board
             }
         });
     }

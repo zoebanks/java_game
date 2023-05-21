@@ -1,129 +1,199 @@
 package Game2;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
+import javafx.animation.*;
 import javafx.event.EventHandler;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Group;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.scene.control.Button;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.text.*;
 import javafx.util.Duration;
 
-import javax.swing.*;
-import javax.swing.text.View;
-import java.security.Key;
+import java.util.Random;
 
-public class Board2 extends Application {
+public class Board2 extends Stage {
+    private Boolean foundWaldo = false;
+    //int delaySecs = 3;
+    BorderPane borderPane = new BorderPane();
+    Scene scene = new Scene(borderPane, 800, 800);
 
-    private static final int ROWS = 10;
-    private static final int COLS = 10;
-    private static final int NUM_SEC = 30;
-    private int sec_left = NUM_SEC;
+    private static final Integer TIMELIMIT = 10;
+    private Timeline timeline;
+    private int countdownSeconds = TIMELIMIT;
+    private Text timerText = new Text("Timer: " + countdownSeconds);
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("Game 2 - Board");
-        /*Group root = new Group();
-        Scene scene = new Scene(root, 800, 800, Color.GREEN);
-        primaryStage.setScene(scene);
-        primaryStage.show();*/
+    public Board2(int round_num, int number_people) {
+        super();
+        Random rd = new Random();
+        this.setTitle("Game 2 - Board");
+        Image people = new Image("file:./img/blue_button_small.png");
 
-        BorderPane borderPane = new BorderPane();
-        Scene boardScene = new Scene(borderPane, 800, 800);
-
-        GridPane board = new GridPane();
-        //board.setPrefSize(256,256);
-        board.setMaxSize(512, 512);
-        //board.setStyle("-fx-background-color: #C0C0C0;");
+        this.setScene(scene);
+        Pane board = new Pane();
         borderPane.setCenter(board);
-        primaryStage.setScene(boardScene);
-        primaryStage.show();
 
-        Button[][] buttons = new Button[ROWS][COLS];
-        for (int row = 0; row < ROWS; row++) {
-            for (int col = 0; col < COLS; col++) {
-                Button blueButton = new Button();
-                Image blueButtonImg = new Image("file:./img/blue_button.png");
-                ImageView blueButtonView = new ImageView(blueButtonImg);
-                blueButtonView.setFitWidth(board.getWidth() / COLS);
-                blueButtonView.setFitHeight(board.getHeight() / ROWS);
-                blueButtonView.setPreserveRatio(true);
-                blueButton.setGraphic(blueButtonView);
-                buttons[row][col] = blueButton;
-                board.add(blueButton, col, row);
+        ImageView[] peopleView = new ImageView[number_people];
+        for (int i = 0; i < number_people; i++){
+            peopleView[i] = new ImageView(people);
+            peopleView[i].setX(rd.nextInt(790));
+            peopleView[i].setY(rd.nextInt(790));
+            double scale = rd.nextDouble() + 0.5;
+            peopleView[i].setScaleX(scale);
+            peopleView[i].setScaleY(scale);
 
-                blueButton.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        System.out.println("Incorrect");
-                    }
-                });
-            }
+            board.getChildren().add(peopleView[i]);
         }
+        Image waldo = new Image("file:./img/red_button_small.png");
+        ImageView waldoView = new ImageView(waldo);
+        waldoView.setX(rd.nextInt(700));
+        waldoView.setY(rd.nextInt(700));
+        double scale = rd.nextDouble() + 0.5;
+        waldoView.setScaleX(scale);
+        waldoView.setScaleY(scale);
+        board.getChildren().add(waldoView);
 
-        Button redButton = new Button();
-        Image redButtonImg = new Image("file:./img/red_button.png");
-        ImageView redButtonView = new ImageView(redButtonImg);
-        //redButton.setPrefSize(buttonWidth, buttonHeight);
-        redButtonView.setFitHeight(board.getHeight() / ROWS);
-        redButtonView.setFitWidth(board.getWidth() / COLS);
-        redButtonView.setPreserveRatio(true);
-        redButton.setGraphic(redButtonView);
-        int redRow = (int) (Math.random() * ROWS);
-        int redCol = (int) (Math.random() * COLS);
-        buttons[redRow][redCol] = redButton;
-        board.add(redButton, redCol, redRow);
+        this.show();
 
-        redButton.setOnAction(new EventHandler<ActionEvent>() {
+        HBox statusBar = new HBox();
+        statusBar.setPadding(new Insets(10, 10, 10, 10));
+        /*TimerDisplay timerDisplay = new TimerDisplay();
+        timerDisplay.startCountdown();
+        Text timerText = new Text("Timer: ");*/
+        timerText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+        startCountdown();
+
+        Image full_heart = new Image("file:./img/heart_icon.png");
+        ImageView heartView = new ImageView(full_heart);
+        Image empty_heart = new Image("file:./img/heart_icon_empty.png");
+        heartView.setFitWidth(30);
+        heartView.setFitHeight(30);
+
+        Pane spacer = new Pane();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        spacer.setMinSize(10, 1);
+        statusBar.getChildren().addAll(timerText, spacer, heartView);
+
+        Text roundNumText = new Text("ROUND " + round_num);
+        roundNumText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 30));
+        VBox topBar = new VBox(roundNumText, statusBar);
+        topBar.setAlignment(Pos.TOP_CENTER);
+
+        borderPane.setTop(topBar);
+
+        waldoView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Correct");
+            public void handle(MouseEvent mouseEvent) {
+                //TransitionScreen transitionScreen = new TransitionScreen();
+                //displayTransitionScreen();
+                /*PauseTransition pause = new PauseTransition(Duration.seconds(1));
+                pause.setOnFinished(e -> close());
+                pause.play();*/
+                foundWaldo = true;
+                timerText.setText("Got me! Get ready for the next round...");
+                Timeline tl = new Timeline(new KeyFrame(Duration.seconds(1), ae -> close()));
+                tl.play();
+                //close();
+                //timerDisplay.foundCharacter();
+                if (round_num == 1) {
+                    Board2 round2 = new Board2(2, 600);
+                    //if (round2.getStatusLostGame()) { lostGame2 = true; }
+                }
+                else if (round_num == 2) {
+                    Board2 round3 = new Board2(3, 900);
+                    //if (round3.getStatusLostGame()) { lostGame2 = true; }
+                }
+                else {
+                    StackPane winnerPane = new StackPane();
+                    Text winnerText = new Text("Congratulations, you beat all 3 rounds!" +
+                            "\n\nGame 2 complete");
+                    winnerText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+                    winnerText.setTextAlignment(TextAlignment.CENTER);
+                    winnerPane.getChildren().add(winnerText);
+                    Stage winnerStage = new Stage();
+                    Scene winnerScene = new Scene(winnerPane, 800, 800);
+                    winnerStage.setScene(winnerScene);
+                    winnerStage.show();
+                }
             }
         });
 
 
-        Button timerButton = new Button();
-        timerButton.setText("Timer: ");
-        borderPane.setTop(timerButton);
-
-        /*Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
+        /*AnimationTimer animationTimer = new AnimationTimer() {
             @Override
-            public void handle(ActionEvent actionEvent) {
-                public void handle(ActionEvent event) {
-                    sec_left--;
-                    timerButton.setText("Time remaining: " + sec_left + " seconds");
-                    if (sec_left <= 0) {
-                        timeline.stop();
-                        timerButton.setText("Time's up!");
-                    }
+            public void handle(long l) {
+                timerText.setText(timerDisplay.getTimer());
+                if(timerDisplay.roundLost()) {
+                    heartView.setImage(empty_heart);
+                    lostGame2 = true;
                 }
             }
-        }));
-        timeline.setCycleCount(NUM_SEC);
-        timeline.play(); */
+        };
+        animationTimer.start();
 
-        /*board.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                System.out.println("Correct"
-                        + mouseEvent.getSceneX() + "," + mouseEvent.getSceneY());
-                primaryStage.setScene(nextScene);
+        if(lostGame2) {
+            showLossScreen();
+        }*/
+
+    }
+
+    public void startCountdown() {
+        Timeline timeline = new Timeline();
+        timeline.setCycleCount(countdownSeconds);
+        timeline.getKeyFrames().add(
+                new KeyFrame(Duration.seconds(1), event -> {
+                    countdownSeconds--;
+                    timerText.setText("Timer: " + countdownSeconds);
+                })
+        );
+        timeline.setOnFinished(event -> {
+            if (!foundWaldo) {
+                close();
+                showLossScreen();
             }
-        });*/
+        });
+        timeline.play();
+    }
 
+    public void showLossScreen() {
+        StackPane pane = new StackPane();
+        Text text = new Text("You lost :(");
+        text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+        text.setTextAlignment(TextAlignment.CENTER);
+        pane.getChildren().add(text);
+
+        Scene lossScreenScene = new Scene(pane, 800, 800);
+        Stage lossScreenStage = new Stage();
+        lossScreenStage.setScene(lossScreenScene);
+        lossScreenStage.show();
+
+        /*PauseTransition pause = new PauseTransition(Duration.seconds(3));
+        pause.setOnFinished(e -> lossScreenStage.close());
+        pause.play();*/
+
+        //lossScreenStage.close();
     }
-    public static void main(String[] args) {
-        launch(args);
-    }
+
+    /*public void displayTransitionScreen() {
+        StackPane root = new StackPane();
+        Text text = new Text("Got me!\nGet ready for the next round...");
+        text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+        text.setTextAlignment(TextAlignment.CENTER);
+        //StackPane.getChildren().add(text);
+
+        Scene transitionScreenScene = new Scene(root, 800, 800);
+        scene = transitionScreenScene;
+        Stage transitionScreenStage = new Stage();
+        transitionScreenStage.setScene(transitionScreenScene);
+        transitionScreenStage.show();
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+        pause.setOnFinished(e -> close());
+        pause.play();
+    }*/
+
 }
-
