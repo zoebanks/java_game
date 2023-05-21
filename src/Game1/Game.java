@@ -42,6 +42,7 @@ public class Game extends Application {
     private double min = 0 + SPRITE_SIZE;
 
     private int num_lives_remaining = 3;
+    private boolean allSpritesReachedTop = false;
 
     @Override
     public void start(Stage primaryStage) {
@@ -92,12 +93,14 @@ public class Game extends Application {
                         Rectangle2D spriteRect = new Rectangle2D(sprite.getX(), sprite.getY(), SPRITE_SIZE, SPRITE_SIZE);
                         Rectangle2D playerRect = new Rectangle2D(playerX, playerY, PLAYER_SIZE, PLAYER_SIZE);
                         if (playerRect.intersects(spriteRect)) {
-                            //change directions
                             sprite.setDirection(sprite.getDirection() * -1);
-                            sprite.setIntersected(!sprite.isIntersected());
+                            sprite.setIntersected(true);
                             System.out.println("Sprite " + sprite.getId() + " changed direction.");
                         }
                     }
+
+                    //ToDo: change this because it is in AnimationTimer so it is updating
+                    // consistently instead of one time
 
                     // Check if any sprite reaches the bottom
                     for (Sprite1 sprite : sprites) {
@@ -112,22 +115,14 @@ public class Game extends Application {
                         }
                     }
 
-                    // Check if all sprites reach the top
-                    boolean allSpritesReachedTop = true;
+                    //only need last sprite to cross with > 0 lives left
                     for (Sprite1 sprite : sprites) {
-                        if (sprite.getY() < -SPRITE_SIZE) {
-                            allSpritesReachedTop = false;
-                            break;
+                        if (sprite.getId() == sprites.size() - 1 && sprite.getDirection() > 0 && sprite.getY() <= -240) {
+                            //System.out.println("ID: " + sprite.getId() + ", Y: " + sprite.getY());
+                            gameRunning = false;
+                            allSpritesReachedTop = true;
+                            System.out.println("You win!");
                         }
-                        else if (sprite.getDirection() < 0) {
-                            allSpritesReachedTop = false;
-                            break;
-                        }
-                    }
-
-                    if (allSpritesReachedTop) {
-                        gameRunning = false;
-                        System.out.println("You win!");
                     }
 
                     // Draw the sprites
@@ -154,14 +149,14 @@ public class Game extends Application {
 
         double startY = -SPRITE_SIZE;
         double staggeredDelay = 5; // Delay between each sprite creation
+        double startX = 0;
 
         for (int i = 0; i < 3; i++) {
-            double startX = SPRITE_SIZE / 2 + random_num_gen();
+            startX = SPRITE_SIZE / 2 + random_num_gen();
             Color spriteColor = Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256));
             Sprite1 sprite = new Sprite1(startX, startY, SPRITE_SPEED, spriteColor, i + 1, -1);
             sprites.add(sprite);
 
-            startX += SPRITE_SIZE * 1.5;
             startY -= SPRITE_SIZE * staggeredDelay;
 
         }
