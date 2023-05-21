@@ -81,11 +81,7 @@ public class Game extends Application {
                 if (gameRunning) {
                     // Update sprite positions
                     for (Sprite1 sprite : sprites) {
-                        if (!sprite.isIntersected()) {
-                            sprite.setY(sprite.getY() + sprite.getSpeed());
-                        } else {
-                            sprite.setY(sprite.getY() - sprite.getSpeed());
-                        }
+                        sprite.setY(sprite.getY() + (sprite.getSpeed() * sprite.getDirection()));
                     }
 
                     // Check for player-sprite intersection
@@ -93,9 +89,8 @@ public class Game extends Application {
                         Rectangle2D spriteRect = new Rectangle2D(sprite.getX(), sprite.getY(), SPRITE_SIZE, SPRITE_SIZE);
                         Rectangle2D playerRect = new Rectangle2D(playerX, playerY, PLAYER_SIZE, PLAYER_SIZE);
                         if (playerRect.intersects(spriteRect)) {
-                            sprite.setDirection(sprite.getDirection() * -1);
+                            sprite.setDirection(-1);
                             sprite.setIntersected(true);
-                            System.out.println("Sprite " + sprite.getId() + " changed direction.");
                         }
                     }
 
@@ -117,7 +112,7 @@ public class Game extends Application {
 
                     //only need last sprite to cross with > 0 lives left
                     for (Sprite1 sprite : sprites) {
-                        if (sprite.getId() == sprites.size() - 1 && sprite.getDirection() > 0 && sprite.getY() <= -240) {
+                        if (sprite.getId() == sprites.size() - 1 && sprite.getDirection() < 0 && sprite.getY() <= -240) {
                             //System.out.println("ID: " + sprite.getId() + ", Y: " + sprite.getY());
                             gameRunning = false;
                             allSpritesReachedTop = true;
@@ -154,7 +149,7 @@ public class Game extends Application {
         for (int i = 0; i < 3; i++) {
             startX = SPRITE_SIZE / 2 + random_num_gen();
             Color spriteColor = Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256));
-            Sprite1 sprite = new Sprite1(startX, startY, SPRITE_SPEED, spriteColor, i + 1, -1);
+            Sprite1 sprite = new Sprite1(startX, startY, SPRITE_SPEED, spriteColor, i + 1, 1);
             sprites.add(sprite);
 
             startY -= SPRITE_SIZE * staggeredDelay;

@@ -11,7 +11,7 @@ class Sprite1 {
     private Color color;
     private int id;
     private int SPRITE_SIZE = 40;
-    private int direction = -1;
+    private int direction = 1;
 
     public Sprite1(double x, double y, double speed, Color color, int id, int direction) {
         this.x = x;
