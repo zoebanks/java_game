@@ -13,10 +13,8 @@ import javafx.stage.Stage;
 
 public class MainApplication1 extends Application {
 
-    private Stage instructionStage = new Stage();
+    private Stage instrStage = new Stage();
     private Boolean startButtonClicked = false;
-    public static void main(String[] args) { launch(args); }
-
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -42,14 +40,19 @@ public class MainApplication1 extends Application {
         root.getChildren().add(text);
 
         Scene instrScene = new Scene(root, 800, 800);
-        Stage instrStage = new Stage();
+        //Stage instrStage = new Stage();
         instrStage.setScene(instrScene);
         instrStage.show();
         startButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                //Board
+                instrStage.close();
+                Board1 board = new Board1();
             }
         });
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
