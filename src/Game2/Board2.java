@@ -15,15 +15,14 @@ import javafx.scene.text.*;
 import javafx.util.Duration;
 
 import java.util.Random;
+import TransitionScreens;
 
 public class Board2 extends Stage {
     private Boolean foundWaldo = false;
-    //int delaySecs = 3;
     BorderPane borderPane = new BorderPane();
     Scene scene = new Scene(borderPane, 800, 800);
 
     private static final Integer TIMELIMIT = 10;
-    private Timeline timeline;
     private int countdownSeconds = TIMELIMIT;
     private Text timerText = new Text("Timer: " + countdownSeconds);
 
@@ -61,9 +60,6 @@ public class Board2 extends Stage {
 
         HBox statusBar = new HBox();
         statusBar.setPadding(new Insets(10, 10, 10, 10));
-        /*TimerDisplay timerDisplay = new TimerDisplay();
-        timerDisplay.startCountdown();
-        Text timerText = new Text("Timer: ");*/
         timerText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
         startCountdown();
 
@@ -88,47 +84,21 @@ public class Board2 extends Stage {
         waldoView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                //TransitionScreen transitionScreen = new TransitionScreen();
-                //displayTransitionScreen();
-                /*PauseTransition pause = new PauseTransition(Duration.seconds(1));
-                pause.setOnFinished(e -> close());
-                pause.play();*/
                 foundWaldo = true;
                 timerText.setText("Got me! Get ready for the next round...");
                 Timeline tl = new Timeline(new KeyFrame(Duration.seconds(1), ae -> close()));
                 tl.play();
-                //close();
-                //timerDisplay.foundCharacter();
                 if (round_num == 1) {
                     Board2 round2 = new Board2(2, 600);
-                    //if (round2.getStatusLostGame()) { lostGame2 = true; }
                 }
                 else if (round_num == 2) {
                     Board2 round3 = new Board2(3, 900);
-                    //if (round3.getStatusLostGame()) { lostGame2 = true; }
                 }
                 else {
                     showWinScreen();
                 }
             }
         });
-
-
-        /*AnimationTimer animationTimer = new AnimationTimer() {
-            @Override
-            public void handle(long l) {
-                timerText.setText(timerDisplay.getTimer());
-                if(timerDisplay.roundLost()) {
-                    heartView.setImage(empty_heart);
-                    lostGame2 = true;
-                }
-            }
-        };
-        animationTimer.start();
-
-        if(lostGame2) {
-            showLossScreen();
-        }*/
 
     }
 
@@ -144,60 +114,12 @@ public class Board2 extends Stage {
         timeline.setOnFinished(event -> {
             if (!foundWaldo) {
                 close();
-                showLossScreen();
+                TransitionScreens endScreen = new TransitionScreens();
+                endScreen.showLossScreen();
             }
         });
         timeline.play();
     }
 
-    public void showLossScreen() {
-        StackPane pane = new StackPane();
-        Text text = new Text("You lost :(");
-        text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
-        text.setTextAlignment(TextAlignment.CENTER);
-        pane.getChildren().add(text);
-
-        Scene lossScreenScene = new Scene(pane, 800, 800);
-        Stage lossScreenStage = new Stage();
-        lossScreenStage.setScene(lossScreenScene);
-        lossScreenStage.show();
-
-        /*PauseTransition pause = new PauseTransition(Duration.seconds(3));
-        pause.setOnFinished(e -> lossScreenStage.close());
-        pause.play();*/
-
-        //lossScreenStage.close();
-    }
-
-    public void showWinScreen() {
-        StackPane winnerPane = new StackPane();
-        Text winnerText = new Text("Congratulations, you beat all 3 rounds!" +
-                "\n\nGame 2 complete");
-        winnerText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
-        winnerText.setTextAlignment(TextAlignment.CENTER);
-        winnerPane.getChildren().add(winnerText);
-        Stage winnerStage = new Stage();
-        Scene winnerScene = new Scene(winnerPane, 800, 800);
-        winnerStage.setScene(winnerScene);
-        winnerStage.show();
-    }
-
-    /*public void displayTransitionScreen() {
-        StackPane root = new StackPane();
-        Text text = new Text("Got me!\nGet ready for the next round...");
-        text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
-        text.setTextAlignment(TextAlignment.CENTER);
-        //StackPane.getChildren().add(text);
-
-        Scene transitionScreenScene = new Scene(root, 800, 800);
-        scene = transitionScreenScene;
-        Stage transitionScreenStage = new Stage();
-        transitionScreenStage.setScene(transitionScreenScene);
-        transitionScreenStage.show();
-
-        PauseTransition pause = new PauseTransition(Duration.seconds(1));
-        pause.setOnFinished(e -> close());
-        pause.play();
-    }*/
 
 }
