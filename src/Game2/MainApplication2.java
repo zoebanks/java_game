@@ -56,7 +56,7 @@ public class MainApplication2 extends Application {
             public void handle(ActionEvent actionEvent) {
                 startButtonClicked = true;
                 instrStage.close();
-                Board2 round1 = new Board2(1, 600);
+                Board2 round1 = new Board2(1, 100);
             }
         });
     }

@@ -1,20 +1,48 @@
 package Other;
 
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.*;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
+import java.awt.*;
 
 public class TransitionScreens extends Pane {
     private int gameNum;
+    private int waldoX;
+    private int waldoY;
+    private double waldoScale;
 
     public TransitionScreens(int gameNum) {
         this.gameNum = gameNum;
     }
 
+    public TransitionScreens(int gameNum, int waldoX, int waldoY, double waldoScale) {
+        this.gameNum = gameNum;
+        this.waldoX = waldoX;
+        this.waldoY = waldoY;
+        this.waldoScale = waldoScale;
+    }
+
     public void showLossScreen() {
         StackPane pane = new StackPane();
+        Pane waldoPane = new Pane();
+
+        if (gameNum == 2) {
+            Image waldo = new Image("file:./img/jade.png");
+            ImageView waldoView = new ImageView(waldo);
+            waldoView.setX(waldoX);
+            waldoView.setY(waldoY + 87);
+            waldoView.setScaleX(waldoScale);
+            waldoView.setScaleY(waldoScale);
+            waldoPane.getChildren().add(waldoView);
+            pane.getChildren().add(waldoPane);
+        }
+
         Text text = new Text("You lost :(");
         text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
         text.setTextAlignment(TextAlignment.CENTER);

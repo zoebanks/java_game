@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.*;
@@ -13,13 +14,13 @@ import javafx.stage.Stage;
 
 import Other.TransitionScreens;
 
-public class MainApplication1 extends Application {
+public class MainApplication1 extends Pane {
 
     private Stage instrStage = new Stage();
     private Boolean startButtonClicked = false;
 
-    @Override
-    public void start(Stage stage) throws Exception {
+
+    public MainApplication1(Stage stage) throws Exception {
 
         StackPane root = new StackPane();
         Text instrTitle = new Text("Instructions");
@@ -55,6 +56,6 @@ public class MainApplication1 extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+ //       launch(args);
     }
 }
