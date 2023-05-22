@@ -108,16 +108,7 @@ public class Board2 extends Stage {
                     //if (round3.getStatusLostGame()) { lostGame2 = true; }
                 }
                 else {
-                    StackPane winnerPane = new StackPane();
-                    Text winnerText = new Text("Congratulations, you beat all 3 rounds!" +
-                            "\n\nGame 2 complete");
-                    winnerText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
-                    winnerText.setTextAlignment(TextAlignment.CENTER);
-                    winnerPane.getChildren().add(winnerText);
-                    Stage winnerStage = new Stage();
-                    Scene winnerScene = new Scene(winnerPane, 800, 800);
-                    winnerStage.setScene(winnerScene);
-                    winnerStage.show();
+                    showWinScreen();
                 }
             }
         });
@@ -176,6 +167,19 @@ public class Board2 extends Stage {
         pause.play();*/
 
         //lossScreenStage.close();
+    }
+
+    public void showWinScreen() {
+        StackPane winnerPane = new StackPane();
+        Text winnerText = new Text("Congratulations, you beat all 3 rounds!" +
+                "\n\nGame 2 complete");
+        winnerText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+        winnerText.setTextAlignment(TextAlignment.CENTER);
+        winnerPane.getChildren().add(winnerText);
+        Stage winnerStage = new Stage();
+        Scene winnerScene = new Scene(winnerPane, 800, 800);
+        winnerStage.setScene(winnerScene);
+        winnerStage.show();
     }
 
     /*public void displayTransitionScreen() {

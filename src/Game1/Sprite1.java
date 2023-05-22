@@ -12,6 +12,7 @@ class Sprite1 {
     private int id;
     private int SPRITE_SIZE = 40;
     private int direction = 1;
+    private boolean lostLife = false;
 
     public Sprite1(double x, double y, double speed, Color color, int id, int direction) {
         this.x = x;
@@ -62,8 +63,25 @@ class Sprite1 {
         return direction;
     }
 
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
     public void draw(GraphicsContext gc) {
         gc.setFill(color);
         gc.fillRect(x, y, SPRITE_SIZE, SPRITE_SIZE);
     }
+
+    public void setLostLife(boolean lostLife) {
+        this.lostLife = lostLife;
+    }
+
+    public boolean getLostLife() {
+        return lostLife;
+    }
+
 }

@@ -1,15 +1,21 @@
 package Game1;
 
 import javafx.animation.AnimationTimer;
-import javafx.application.Application;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.*;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,23 +44,60 @@ public class Board1 extends Stage {
     private Canvas canvas = new Canvas(WIDTH, HEIGHT);
     private GraphicsContext gc = canvas.getGraphicsContext2D();
 
-    private double max = 600 - SPRITE_SIZE;
+    private double max = 800 - SPRITE_SIZE;
     private double min = 0 + SPRITE_SIZE;
 
-    private int num_lives_remaining = 3;
-    private boolean allSpritesReachedTop = false;
+    private int numLivesRemaining = 3;
+    private int NUM_SPRITES = 13;
+    private int countdownSeconds = 31;
+    private Text timerText = new Text("Timer: ");
 
-    //@Override
+    Stage primaryStage = new Stage();
+    private HBox statusBar = new HBox();
+    private HBox heartsBar = new HBox();
+    private Image fullHeart = new Image("file:./img/heart_icon.png");
+    private Image emptyHeart = new Image("file:./img/heart_icon_empty.png");
+    private ImageView heartView1 = new ImageView(fullHeart);
+    private ImageView heartView2 = new ImageView(fullHeart);
+    private ImageView heartView3 = new ImageView(fullHeart);
+    private ImageView emptyHeartView1 = new ImageView(emptyHeart);
+    private ImageView emptyHeartView2 = new ImageView(emptyHeart);
+    private ImageView emptyHeartView3 = new ImageView(emptyHeart);
+
     public Board1() {
-        super();
-        Stage primaryStage = new Stage();
-        Pane root = new Pane();
+        //super();
+        StackPane root = new StackPane();
         root.getChildren().add(canvas);
 
         Scene scene = new Scene(root, WIDTH, HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Game 1 - La Passation");
         primaryStage.show();
+
+        statusBar.setPrefWidth(WIDTH);
+        statusBar.setPadding(new Insets(10, 10, 10, 10));
+        timerText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+        startCountdown();
+
+        heartView1.setFitWidth(30);
+        heartView1.setFitHeight(30);
+        heartView2.setFitWidth(30);
+        heartView2.setFitHeight(30);
+        heartView3.setFitWidth(30);
+        heartView3.setFitHeight(30);
+        emptyHeartView1.setFitWidth(30);
+        emptyHeartView1.setFitHeight(30);
+        emptyHeartView2.setFitWidth(30);
+        emptyHeartView2.setFitHeight(30);
+        emptyHeartView3.setFitWidth(30);
+        emptyHeartView3.setFitHeight(30);
+
+        heartsBar.getChildren().addAll(heartView1, heartView2, heartView3);
+        Pane spacer = new Pane();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        spacer.setMinSize(10, 1);
+        statusBar.getChildren().addAll(timerText, spacer, heartsBar);
+        root.getChildren().add(statusBar);
 
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.LEFT) {
@@ -93,33 +136,27 @@ public class Board1 extends Stage {
                         if (playerRect.intersects(spriteRect)) {
                             sprite.setDirection(-1);
                             sprite.setIntersected(true);
+                            sprite.setColor(Color.GREEN);
+                        }
+                        else if (sprite.getY() > playerY) {
+                            sprite.setDirection(-1);
+                            sprite.setColor(Color.RED);
                         }
                     }
 
-                    //ToDo: change this because it is in AnimationTimer so it is updating
-                    // consistently instead of one time
+                    //idea: make them bounce back up but without a drink
 
-                    // Check if any sprite reaches the bottom
                     for (Sprite1 sprite : sprites) {
-                        if (!sprite.isIntersected() && sprite.getY() >= HEIGHT) {
-                            --num_lives_remaining;
-                            System.out.println("-1 life");
-                            if (num_lives_remaining < 1) {
-                                gameRunning = false;
-                                System.out.println("You lose!");
-                            }
-                            break;
+                        if (sprite.getY() < SPRITE_SIZE && !sprite.isIntersected() && sprite.getDirection() < 0) {
+                            minusOne(sprite);
                         }
                     }
 
-                    //only need last sprite to cross with > 0 lives left
-                    for (Sprite1 sprite : sprites) {
-                        if (sprite.getId() == sprites.size() - 1 && sprite.getDirection() < 0 && sprite.getY() <= -240) {
-                            //System.out.println("ID: " + sprite.getId() + ", Y: " + sprite.getY());
-                            gameRunning = false;
-                            allSpritesReachedTop = true;
-                            System.out.println("You win!");
-                        }
+
+                    if (numLivesRemaining < 1) {
+                        gameRunning = false;
+                        primaryStage.close();
+                        showLossScreen();
                     }
 
                     // Draw the sprites
@@ -148,10 +185,13 @@ public class Board1 extends Stage {
         double staggeredDelay = 5; // Delay between each sprite creation
         double startX = 0;
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < NUM_SPRITES; i++) {
             startX = SPRITE_SIZE / 2 + random_num_gen();
             Color spriteColor = Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256));
-            Sprite1 sprite = new Sprite1(startX, startY, SPRITE_SPEED, spriteColor, i + 1, 1);
+            if (spriteColor == Color.RED || spriteColor == Color.GREEN) {
+                spriteColor = Color.GRAY;
+            }
+            Sprite1 sprite = new Sprite1(startX, startY, SPRITE_SPEED, spriteColor, i, 1);
             sprites.add(sprite);
 
             startY -= SPRITE_SIZE * staggeredDelay;
@@ -161,8 +201,70 @@ public class Board1 extends Stage {
 
     public double random_num_gen() {
         return Math.floor(Math.random() *(max - min + 1) + min);
-
     }
 
+    public void minusOne(Sprite1 sprite) {
+        if (!sprite.getLostLife()) {
+            sprite.setLostLife(true);
+            --numLivesRemaining;
+            System.out.println("-1 Life. Lives Remaining: " + numLivesRemaining);
+            changeHeartView();
+        }
+    }
+
+    public void changeHeartView() {
+        heartsBar.getChildren().clear();
+        if (numLivesRemaining == 2) {
+            heartsBar.getChildren().addAll(emptyHeartView1, heartView2, heartView3);
+        }
+        else if (numLivesRemaining == 1) {
+            heartsBar.getChildren().addAll(emptyHeartView1, emptyHeartView2, heartView3);
+        }
+        else {
+            heartsBar.getChildren().addAll(emptyHeartView1, emptyHeartView2, emptyHeartView3);
+        }
+    }
+
+    public void startCountdown() {
+        Timeline timeline = new Timeline();
+        timeline.setCycleCount(countdownSeconds);
+        timeline.getKeyFrames().add(
+                new KeyFrame(Duration.seconds(1), event -> {
+                    countdownSeconds--;
+                    timerText.setText("Timer: " + countdownSeconds);
+                })
+        );
+        timeline.setOnFinished(event -> {
+            primaryStage.close();
+            showWinScreen();
+        });
+        timeline.play();
+    }
+
+    public void showLossScreen() {
+        StackPane pane = new StackPane();
+        Text text = new Text("You lost :(");
+        text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+        text.setTextAlignment(TextAlignment.CENTER);
+        pane.getChildren().add(text);
+
+        Scene lossScreenScene = new Scene(pane, 800, 800);
+        Stage lossScreenStage = new Stage();
+        lossScreenStage.setScene(lossScreenScene);
+        lossScreenStage.show();
+    }
+
+    public void showWinScreen() {
+        StackPane winnerPane = new StackPane();
+        Text winnerText = new Text("Congratulations, you served drinks the entire night!" +
+                "\n\nGame 1 complete");
+        winnerText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+        winnerText.setTextAlignment(TextAlignment.CENTER);
+        winnerPane.getChildren().add(winnerText);
+        Stage winnerStage = new Stage();
+        Scene winnerScene = new Scene(winnerPane, 800, 800);
+        winnerStage.setScene(winnerScene);
+        winnerStage.show();
+    }
 
 }
