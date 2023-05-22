@@ -15,7 +15,7 @@ import javafx.scene.text.*;
 import javafx.util.Duration;
 
 import java.util.Random;
-import TransitionScreens;
+import Other.TransitionScreens;
 
 public class Board2 extends Stage {
     private Boolean foundWaldo = false;
@@ -95,7 +95,8 @@ public class Board2 extends Stage {
                     Board2 round3 = new Board2(3, 900);
                 }
                 else {
-                    showWinScreen();
+                    TransitionScreens endScreen = new TransitionScreens(2);
+                    endScreen.showWinScreen();
                 }
             }
         });
@@ -114,7 +115,7 @@ public class Board2 extends Stage {
         timeline.setOnFinished(event -> {
             if (!foundWaldo) {
                 close();
-                TransitionScreens endScreen = new TransitionScreens();
+                TransitionScreens endScreen = new TransitionScreens(2);
                 endScreen.showLossScreen();
             }
         });

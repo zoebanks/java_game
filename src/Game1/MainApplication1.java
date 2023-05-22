@@ -11,6 +11,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 
+import Other.TransitionScreens;
+
 public class MainApplication1 extends Application {
 
     private Stage instrStage = new Stage();

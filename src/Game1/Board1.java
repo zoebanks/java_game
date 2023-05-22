@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import Other.TransitionScreens;
+
 public class Board1 extends Stage {
 
     private static final int WIDTH = 800;
@@ -144,8 +146,6 @@ public class Board1 extends Stage {
                         }
                     }
 
-                    //idea: make them bounce back up but without a drink
-
                     for (Sprite1 sprite : sprites) {
                         if (sprite.getY() < SPRITE_SIZE && !sprite.isIntersected() && sprite.getDirection() < 0) {
                             minusOne(sprite);
@@ -156,7 +156,8 @@ public class Board1 extends Stage {
                     if (numLivesRemaining < 1) {
                         gameRunning = false;
                         primaryStage.close();
-                        showLossScreen();
+                        TransitionScreens endScreen = new TransitionScreens(1);
+                        endScreen.showLossScreen();
                     }
 
                     // Draw the sprites
@@ -195,7 +196,6 @@ public class Board1 extends Stage {
             sprites.add(sprite);
 
             startY -= SPRITE_SIZE * staggeredDelay;
-
         }
     }
 
@@ -236,35 +236,11 @@ public class Board1 extends Stage {
         );
         timeline.setOnFinished(event -> {
             primaryStage.close();
-            showWinScreen();
+            TransitionScreens endScreen = new TransitionScreens(1);
+            endScreen.showWinScreen();
         });
         timeline.play();
     }
 
-    public void showLossScreen() {
-        StackPane pane = new StackPane();
-        Text text = new Text("You lost :(");
-        text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
-        text.setTextAlignment(TextAlignment.CENTER);
-        pane.getChildren().add(text);
-
-        Scene lossScreenScene = new Scene(pane, 800, 800);
-        Stage lossScreenStage = new Stage();
-        lossScreenStage.setScene(lossScreenScene);
-        lossScreenStage.show();
-    }
-
-    public void showWinScreen() {
-        StackPane winnerPane = new StackPane();
-        Text winnerText = new Text("Congratulations, you served drinks the entire night!" +
-                "\n\nGame 1 complete");
-        winnerText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
-        winnerText.setTextAlignment(TextAlignment.CENTER);
-        winnerPane.getChildren().add(winnerText);
-        Stage winnerStage = new Stage();
-        Scene winnerScene = new Scene(winnerPane, 800, 800);
-        winnerStage.setScene(winnerScene);
-        winnerStage.show();
-    }
 
 }

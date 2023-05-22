@@ -57,9 +57,6 @@ public class MainApplication2 extends Application {
                 startButtonClicked = true;
                 instrStage.close();
                 Board2 round1 = new Board2(1, 600);
-                //if (round1.getStatusLostGame()) { showLossScreen(); }
-                //instructions.close();
-                //instructions.hide();
             }
         });
     }

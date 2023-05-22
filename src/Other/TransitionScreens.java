@@ -1,3 +1,5 @@
+package Other;
+
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -6,6 +8,10 @@ import javafx.stage.Stage;
 
 public class TransitionScreens extends Pane {
     private int gameNum;
+
+    public TransitionScreens(int gameNum) {
+        this.gameNum = gameNum;
+    }
 
     public void showLossScreen() {
         StackPane pane = new StackPane();
