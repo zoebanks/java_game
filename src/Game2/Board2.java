@@ -30,8 +30,15 @@ public class Board2 extends Stage {
     private int waldoY = 0;
     private double waldoScale = 0;
 
-    public Board2(int round_num, int number_people) {
-        super();
+    private boolean isFinished = false;
+    private boolean winResult = false;
+
+    public Board2(int round_num, int number_people, boolean isBoard1) {
+        startGame(round_num, number_people);
+    }
+
+    public void startGame (int round_num, int number_people) {
+        //super();
         Random rd = new Random();
         this.setTitle("Game 2 - Board");
 
@@ -44,7 +51,6 @@ public class Board2 extends Stage {
         peopleImages[0] = new Image("file:./img/mustacheguy1.png");
         peopleImages[1] = new Image("file:./img/mustacheguy2.png");
         peopleImages[2] = new Image("file:./img/mustacheguy3.png");
-        //peopleImages[3] = new Image("file:./img/guywithglasses1.png");
         peopleImages[3] = new Image("file:./img/guywithglasses2.png");
 
         for (int i = 0; i < number_people; i++){
@@ -103,14 +109,15 @@ public class Board2 extends Stage {
                 Timeline tl = new Timeline(new KeyFrame(Duration.seconds(1), ae -> close()));
                 tl.play();
                 if (round_num == 1) {
-                    Board2 round2 = new Board2(2, 250);
+                    Board2 round2 = new Board2(2, 250, false);
                 }
                 else if (round_num == 2) {
-                    Board2 round3 = new Board2(3, 500);
+                    Board2 round3 = new Board2(3, 500, false);
                 }
                 else {
                     TransitionScreens endScreen = new TransitionScreens(2);
                     endScreen.showWinScreen();
+                    isFinished = true;
                 }
             }
         });
@@ -131,9 +138,18 @@ public class Board2 extends Stage {
                 close();
                 TransitionScreens endScreen = new TransitionScreens(2, waldoX, waldoY, waldoScale);
                 endScreen.showLossScreen();
+                isFinished = true;
             }
         });
         timeline.play();
+    }
+
+    public boolean getIsFinished() {
+        return isFinished;
+    }
+
+    public boolean getWinResult() {
+        return winResult;
     }
 
 

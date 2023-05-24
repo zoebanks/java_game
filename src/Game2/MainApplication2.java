@@ -1,29 +1,31 @@
 package Game2;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 
-public class MainApplication2 extends Application {
+public class MainApplication2 extends Pane {
 
     private Stage instructionStage = new Stage();
     private Stage board1Stage = new Stage();
     private Stage board2Stage = new Stage();
     private Stage board3Stage = new Stage();
     private Boolean startButtonClicked = false;
-    public static void main(String[] args) { launch(args); }
 
-    //Board[] arrayOfBoards = new Board[3];
+    private Boolean winResult = false;
+    private Board2 round1;
 
-    @Override
-    public void start(Stage stage) throws Exception {
+    //@Override
+    public MainApplication2(Stage stage) throws Exception {
 
         StackPane root = new StackPane();
         Text instrTitle = new Text("Instructions");
@@ -56,8 +58,17 @@ public class MainApplication2 extends Application {
             public void handle(ActionEvent actionEvent) {
                 startButtonClicked = true;
                 instrStage.close();
-                Board2 round1 = new Board2(1, 100);
+                round1 = new Board2(1, 100, true);
             }
         });
+
+        new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (round1.getIsFinished()) {
+                    System.out.println("Finished");
+                }
+            }
+        };
     }
 }

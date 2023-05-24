@@ -1,21 +1,31 @@
 package Other;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.awt.*;
+import java.util.concurrent.TimeUnit;
 
 public class TransitionScreens extends Pane {
+
+    private Stage transitionStage = new Stage();
     private int gameNum;
+
     private int waldoX;
     private int waldoY;
     private double waldoScale;
+
+    int countdownSeconds = 2;
 
     public TransitionScreens(int gameNum) {
         this.gameNum = gameNum;
@@ -27,12 +37,26 @@ public class TransitionScreens extends Pane {
         this.waldoY = waldoY;
         this.waldoScale = waldoScale;
     }
-
     public void showLossScreen() {
         StackPane pane = new StackPane();
         Pane waldoPane = new Pane();
 
-        if (gameNum == 2) {
+
+        if (gameNum == 1) {
+            HBox heartsBar = new HBox();
+            heartsBar.setPadding(new Insets(10, 10, 10, 10));
+            Image emptyHeart = new Image("file:./img/heart_icon_empty.png");
+            ImageView[] emptyHearts = new ImageView[3];
+            for (int i = 0; i < 3; i++) {
+                emptyHearts[i] = new ImageView(emptyHeart);
+                emptyHearts[i].setFitHeight(30);
+                emptyHearts[i].setFitWidth(30);
+                heartsBar.getChildren().add(emptyHearts[i]);
+            }
+            pane.getChildren().addAll(heartsBar);
+            heartsBar.setAlignment(Pos.TOP_RIGHT);
+        }
+        else if (gameNum == 2) {
             Image waldo = new Image("file:./img/jade.png");
             ImageView waldoView = new ImageView(waldo);
             waldoView.setX(waldoX);
@@ -49,9 +73,10 @@ public class TransitionScreens extends Pane {
         pane.getChildren().add(text);
 
         Scene lossScreenScene = new Scene(pane, 800, 800);
-        Stage lossScreenStage = new Stage();
-        lossScreenStage.setScene(lossScreenScene);
-        lossScreenStage.show();
+        transitionStage.setScene(lossScreenScene);
+        transitionStage.show();
+
+        delayFunction();
     }
 
     public void showWinScreen() {
@@ -71,10 +96,25 @@ public class TransitionScreens extends Pane {
         winnerText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
         winnerText.setTextAlignment(TextAlignment.CENTER);
         winnerPane.getChildren().add(winnerText);
-        Stage winnerStage = new Stage();
         Scene winnerScene = new Scene(winnerPane, 800, 800);
-        winnerStage.setScene(winnerScene);
-        winnerStage.show();
+        transitionStage.setScene(winnerScene);
+        transitionStage.show();
+        delayFunction();
+
+    }
+
+    public void delayFunction() {
+        Timeline timeline = new Timeline();
+        timeline.setCycleCount(countdownSeconds);
+        timeline.getKeyFrames().add(
+                new KeyFrame(Duration.seconds(1), event -> {
+                    countdownSeconds--;
+                })
+        );
+        timeline.setOnFinished(event -> {
+            transitionStage.close();
+        });
+        timeline.play();
     }
 
 }

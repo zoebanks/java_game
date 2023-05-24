@@ -43,7 +43,6 @@ public class MainApplication1 extends Pane {
         root.getChildren().add(text);
 
         Scene instrScene = new Scene(root, 800, 800);
-        //Stage instrStage = new Stage();
         instrStage.setScene(instrScene);
         instrStage.show();
         startButton.setOnAction(new EventHandler<ActionEvent>() {

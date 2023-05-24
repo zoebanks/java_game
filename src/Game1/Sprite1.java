@@ -3,6 +3,8 @@ package Game1;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.awt.*;
+
 class Sprite1 {
     private double x;
     private double y;
@@ -13,6 +15,7 @@ class Sprite1 {
     private int SPRITE_SIZE = 40;
     private int direction = 1;
     private boolean lostLife = false;
+    private Image character;
 
     public Sprite1(double x, double y, double speed, Color color, int id, int direction) {
         this.x = x;
@@ -21,6 +24,13 @@ class Sprite1 {
         this.color = color;
         this.id = id;
         this.direction = direction;
+        if (id % 2 == 0) {
+            //character = new Image("file:./img/sunglasses1_neutral.png");
+
+        }
+        else {
+            //character = new Image("file:./img/sunglasses2_neutral.png");
+        }
     }
 
     public double getX() {
@@ -49,10 +59,6 @@ class Sprite1 {
 
     public void setIntersected(boolean intersected) {
         this.intersected = intersected;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public void setDirection(int direction) {
