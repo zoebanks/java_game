@@ -8,11 +8,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
-//import javafx.scene.media.*;
-
 
 public class Board extends Application{
     Stage stage;
@@ -32,7 +31,7 @@ public class Board extends Application{
                             System.out.println("Won Game 1");
                             roundNum = 2;
                         }
-                        System.out.println("Running Main Application 1");
+                        //System.out.println("Running Main Application 1");
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -41,7 +40,7 @@ public class Board extends Application{
                     if (roundNum == 2) {
                         try {
                             new MainApplication2(stage);
-                            System.out.println("Running Main Application 2");
+                            //System.out.println("Running Main Application 2");
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -51,7 +50,6 @@ public class Board extends Application{
                     }
                     break;
                 case "Graduation" :
-                    System.out.println("Under construction");
                     stage.close();
                     Graduation graduation = new Graduation();
                     break;
@@ -66,6 +64,41 @@ public class Board extends Application{
         stage = primaryStage;
 
         StackPane root = new StackPane();
+
+        BackgroundImage myBI= new BackgroundImage(new Image("file:./img/blue.png",800,800,false,true),
+                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                BackgroundSize.DEFAULT);
+        root.setBackground(new Background(myBI));
+
+        Image usaFlag = new Image("file:./img/usaflag.png");
+        Image frenchFlag = new Image("file:./img/frenchflag.png");
+        ImageView usaFlagView1 = new ImageView(usaFlag);
+        ImageView frenchFlagView1 = new ImageView(frenchFlag);
+        usaFlagView1.setFitWidth(150);
+        usaFlagView1.setFitHeight(100);
+        frenchFlagView1.setFitWidth(150);
+        frenchFlagView1.setFitHeight(120);
+
+        ImageView usaFlagView2 = new ImageView(usaFlag);
+        ImageView frenchFlagView2 = new ImageView(frenchFlag);
+        usaFlagView2.setFitWidth(150);
+        usaFlagView2.setFitHeight(100);
+        frenchFlagView2.setFitWidth(150);
+        frenchFlagView2.setFitHeight(120);
+
+        HBox flags1 = new HBox();
+        flags1.setAlignment(Pos.TOP_CENTER);
+        flags1.getChildren().addAll(usaFlagView1, frenchFlagView1);
+        flags1.setSpacing(250);
+        flags1.setTranslateY(50);
+
+        HBox flags2 = new HBox();
+        flags2.setAlignment(Pos.BOTTOM_CENTER);
+        flags2.getChildren().addAll(frenchFlagView2, usaFlagView2);
+        flags2.setSpacing(250);
+        flags2.setTranslateY(-50);
+        root.getChildren().addAll(flags1, flags2);
+
         Text enrollmentTitle = new Text("Bienvenue!");
         enrollmentTitle.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 30));
         Text enrollmentDescription = new Text(
@@ -89,7 +122,6 @@ public class Board extends Application{
         startButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                System.out.println("Enrollment button clicked");
                 stage.close();
                 startGame();
             }

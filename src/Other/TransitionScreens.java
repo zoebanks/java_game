@@ -13,9 +13,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.awt.*;
-import java.util.concurrent.TimeUnit;
-
 public class TransitionScreens extends Pane {
 
     private Stage transitionStage = new Stage();
@@ -41,6 +38,11 @@ public class TransitionScreens extends Pane {
         StackPane pane = new StackPane();
         Pane waldoPane = new Pane();
 
+        BackgroundImage myBI= new BackgroundImage(new Image("file:./img/red.png",800,800,false,true),
+                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                BackgroundSize.DEFAULT);
+        waldoPane.setBackground(new Background(myBI));
+        pane.setBackground(new Background(myBI));
 
         if (gameNum == 1) {
             HBox heartsBar = new HBox();
@@ -81,6 +83,10 @@ public class TransitionScreens extends Pane {
 
     public void showWinScreen() {
         StackPane winnerPane = new StackPane();
+        BackgroundImage myBI= new BackgroundImage(new Image("file:./img/lightgreen.png",800,800,false,true),
+                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                BackgroundSize.DEFAULT);
+        winnerPane.setBackground(new Background(myBI));
         Text winnerText = new Text();
         if (gameNum == 1) {
             winnerText = new Text("Congratulations, you served drinks the entire night!" +

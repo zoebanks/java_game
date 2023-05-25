@@ -6,9 +6,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 import javafx.scene.media.*;
@@ -24,6 +23,12 @@ public class MainApplication1 extends Pane {
     public MainApplication1(Stage stage) throws Exception {
 
         StackPane root = new StackPane();
+
+        BackgroundImage myBI= new BackgroundImage(new Image("file:./img/blue.png",800,800,false,true),
+                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                BackgroundSize.DEFAULT);
+        root.setBackground(new Background(myBI));
+
         Text instrTitle = new Text("Instructions");
         instrTitle.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 30));
         Text instrDescription = new Text(

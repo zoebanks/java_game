@@ -14,8 +14,14 @@ import javafx.stage.Stage;
 import javafx.scene.text.*;
 import javafx.util.Duration;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 import Other.TransitionScreens;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 public class Board2 extends Stage {
     private Boolean foundWaldo = false;
@@ -33,11 +39,20 @@ public class Board2 extends Stage {
     private boolean isFinished = false;
     private boolean winResult = false;
 
+    private boolean wonGame = false;
+    private String audioFile = "./sounds/jeopardysong.wav";
+    private AudioInputStream audioStream ;
+    private Clip clip;
+
+    int round_num = 1;
+
     public Board2(int round_num, int number_people, boolean isBoard1) {
+        this.round_num = round_num;
         startGame(round_num, number_people);
     }
 
     public void startGame (int round_num, int number_people) {
+        this.round_num = round_num;
         //super();
         Random rd = new Random();
         this.setTitle("Game 2 - Board");
@@ -45,6 +60,11 @@ public class Board2 extends Stage {
         this.setScene(scene);
         Pane board = new Pane();
         borderPane.setCenter(board);
+
+        BackgroundImage myBI= new BackgroundImage(new Image("file:./img/purple.png",800,800,false,true),
+                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                BackgroundSize.DEFAULT);
+        borderPane.setBackground(new Background(myBI));
 
         ImageView[] peopleView = new ImageView[number_people];
         Image[] peopleImages = new Image[5];
@@ -77,6 +97,9 @@ public class Board2 extends Stage {
         board.getChildren().add(waldoView);
 
         this.show();
+        //if (round_num == 1) {
+            playMusic();
+        //}
 
         HBox statusBar = new HBox();
         statusBar.setPadding(new Insets(10, 10, 10, 10));
@@ -105,6 +128,7 @@ public class Board2 extends Stage {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 foundWaldo = true;
+                stopMusic(audioStream, clip);
                 timerText.setText("Got me! Get ready for the next round...");
                 Timeline tl = new Timeline(new KeyFrame(Duration.seconds(1), ae -> close()));
                 tl.play();
@@ -118,6 +142,7 @@ public class Board2 extends Stage {
                     TransitionScreens endScreen = new TransitionScreens(2);
                     endScreen.showWinScreen();
                     isFinished = true;
+                    //stopMusic(audioStream, clip);
                 }
             }
         });
@@ -135,6 +160,7 @@ public class Board2 extends Stage {
         );
         timeline.setOnFinished(event -> {
             if (!foundWaldo) {
+                stopMusic(audioStream, clip);
                 close();
                 TransitionScreens endScreen = new TransitionScreens(2, waldoX, waldoY, waldoScale);
                 endScreen.showLossScreen();
@@ -142,6 +168,28 @@ public class Board2 extends Stage {
             }
         });
         timeline.play();
+    }
+
+    public void playMusic() {
+
+        try {
+            clip = AudioSystem.getClip();
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(audioFile));
+            clip.open(audioStream);
+            // Play the audio
+            clip.start();
+            // Close the resources
+            audioStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void stopMusic(AudioInputStream audioStream, Clip clip) {
+        //if (round_num == 3) {
+            clip.close();
+        //}
+        //audioStream.close();
     }
 
     public boolean getIsFinished() {

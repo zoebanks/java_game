@@ -33,6 +33,10 @@ import java.util.Random;
 
 import Other.TransitionScreens;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 //import javax.print.attribute.standard.Media;
 
 public class Board1 extends Stage {
@@ -83,6 +87,9 @@ public class Board1 extends Stage {
     private Scene scene = new Scene(root, WIDTH, HEIGHT);
 
     private boolean wonGame = false;
+    private String audioFile = "./sounds/fadeupsong.wav";
+    private AudioInputStream audioStream ;
+    private Clip clip;
 
     public Board1(boolean start) {
         //super();
@@ -91,7 +98,6 @@ public class Board1 extends Stage {
             BackgroundImage myBI= new BackgroundImage(new Image("file:./img/mappartynight.png",800,800,false,true),
                     BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                     BackgroundSize.DEFAULT);
-//then you set to your node
             root.setBackground(new Background(myBI));
 
             root.getChildren().add(canvas);
@@ -231,6 +237,7 @@ public class Board1 extends Stage {
                         primaryStage.close();
                         TransitionScreens endScreen = new TransitionScreens(1);
                         endScreen.showLossScreen();
+                        stopMusic(audioStream, clip);
                         timeline.stop();
                     }
 
@@ -300,24 +307,34 @@ public class Board1 extends Stage {
             primaryStage.close();
             TransitionScreens endScreen = new TransitionScreens(1);
             wonGame = true;
+            stopMusic(audioStream, clip);
             endScreen.showWinScreen();
         });
         timeline.play();
     }
 
     public void playMusic() {
-        /*String musicFile = "sounds/fadeup.mp3";
-        Media sound = new Media(new File(musicFile).toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.play();*/
-        System.out.println("Playing music");
 
-        /*Media sound = new Media(getClass().getResource("file:./sounds/fadeup.mp3").toExternalForm());
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.play();*/
+        //System.out.println("Playing music");
+        try {
+            clip = AudioSystem.getClip();
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(audioFile));
 
-        //AudioClip music = new AudioClip(this.getClass().getResource("file:./sounds/fadeup.mp3").toExternalForm());
+            clip.open(audioStream);
 
+            // Play the audio
+            clip.start();
+
+            // Close the resources
+            audioStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void stopMusic(AudioInputStream audioStream, Clip clip) {
+        clip.close();
+        //audioStream.close();
     }
 
     public boolean getWonGame() {
