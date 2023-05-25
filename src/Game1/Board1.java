@@ -3,25 +3,35 @@ package Game1;
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+//import javafx.scene.media.*;
+//import javafx.scene.media.MediaPlayer;
+//import java.applet.AudioClip;
+//import javafx.scene.media.AudioClip;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import Other.TransitionScreens;
+
+import javax.print.attribute.standard.Media;
 
 public class Board1 extends Stage {
 
@@ -66,12 +76,13 @@ public class Board1 extends Stage {
 
     Timeline timeline = new Timeline();
 
+    private Image playerImage;
+    private StackPane root = new StackPane();
+    private Scene scene = new Scene(root, WIDTH, HEIGHT);
+
     public Board1() {
         //super();
-        StackPane root = new StackPane();
         root.getChildren().add(canvas);
-
-        Scene scene = new Scene(root, WIDTH, HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Game 1 - La Passation");
         primaryStage.show();
@@ -79,7 +90,61 @@ public class Board1 extends Stage {
         statusBar.setPrefWidth(WIDTH);
         statusBar.setPadding(new Insets(10, 10, 10, 10));
         timerText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+
+        VBox characterOptions = new VBox();
+        Text characterText = new Text("Choose your character: ");
+        characterText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+        HBox characterButtons = new HBox();
+        characterButtons.setPadding(new Insets(20, 20, 20, 20));
+        Button michigan = new Button("Michigan Guy");
+        Button illinois = new Button("Illinois Guy");
+        Button zoe = new Button("Zoe");
+        Button pitt = new Button("Pitt Guy");
+        characterButtons.setSpacing(10);
+        characterButtons.getChildren().addAll(michigan, illinois, pitt, zoe);
+        characterButtons.setAlignment(Pos.CENTER);
+        characterOptions.getChildren().addAll(characterText, characterButtons);
+        characterOptions.setAlignment(Pos.CENTER);
+        root.getChildren().add(characterOptions);
+
+        michigan.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                characterOptions.getChildren().clear();
+                playerImage = new Image("file:./img/michiganguy.png");
+                startGame();
+            }
+        });
+        illinois.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                characterOptions.getChildren().clear();
+                playerImage = new Image("file:./img/illinoisguy.png");
+                startGame();
+            }
+        });
+        zoe.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                characterOptions.getChildren().clear();
+                playerImage = new Image("file:./img/zoe.png");
+                startGame();
+            }
+        });
+        pitt.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                characterOptions.getChildren().clear();
+                playerImage = new Image("file:./img/pittguy.png");
+                startGame();
+            }
+        });
+    }
+
+    public void startGame() {
+
         startCountdown();
+        //playMusic();
 
         for (int i = 0; i < 3; i++) {
             heartsFull[i] = new ImageView(fullHeart);
@@ -161,7 +226,7 @@ public class Board1 extends Stage {
                         playerX = WIDTH - PLAYER_SIZE;
                     }
 
-                    gc.drawImage(new Image("file:./img/michiganguy.png"), playerX, playerY, PLAYER_SIZE, PLAYER_HEIGHT);
+                    gc.drawImage(playerImage, playerX, playerY, PLAYER_SIZE, PLAYER_HEIGHT);
 
                 }
             }
@@ -224,5 +289,18 @@ public class Board1 extends Stage {
         timeline.play();
     }
 
+    public void playMusic() {
+        /*String musicFile = "file:./sounds/fadeup.mp3";
+        Media sound = new Media(new File(musicFile).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.play();*/
+
+        /*Media sound = new Media(getClass().getResource("file:./sounds/fadeup.mp3").toExternalForm());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.play();*/
+
+        //AudioClip music = new AudioClip(this.getClass().getResource("file:./sounds/fadeup.mp3").toExternalForm());
+
+    }
 
 }
