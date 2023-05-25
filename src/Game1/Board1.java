@@ -17,13 +17,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-//import javafx.scene.media.*;
-//import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.*;
+import javafx.scene.media.MediaPlayer;
 //import java.applet.AudioClip;
 //import javafx.scene.media.AudioClip;
 
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,7 @@ import java.util.Random;
 
 import Other.TransitionScreens;
 
-import javax.print.attribute.standard.Media;
+//import javax.print.attribute.standard.Media;
 
 public class Board1 extends Stage {
 
@@ -80,71 +82,84 @@ public class Board1 extends Stage {
     private StackPane root = new StackPane();
     private Scene scene = new Scene(root, WIDTH, HEIGHT);
 
-    public Board1() {
+    private boolean wonGame = false;
+
+    public Board1(boolean start) {
         //super();
-        root.getChildren().add(canvas);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Game 1 - La Passation");
-        primaryStage.show();
+        if (start) {
 
-        statusBar.setPrefWidth(WIDTH);
-        statusBar.setPadding(new Insets(10, 10, 10, 10));
-        timerText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+            BackgroundImage myBI= new BackgroundImage(new Image("file:./img/mappartynight.png",800,800,false,true),
+                    BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                    BackgroundSize.DEFAULT);
+//then you set to your node
+            root.setBackground(new Background(myBI));
 
-        VBox characterOptions = new VBox();
-        Text characterText = new Text("Choose your character: ");
-        characterText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
-        HBox characterButtons = new HBox();
-        characterButtons.setPadding(new Insets(20, 20, 20, 20));
-        Button michigan = new Button("Michigan Guy");
-        Button illinois = new Button("Illinois Guy");
-        Button zoe = new Button("Zoe");
-        Button pitt = new Button("Pitt Guy");
-        characterButtons.setSpacing(10);
-        characterButtons.getChildren().addAll(michigan, illinois, pitt, zoe);
-        characterButtons.setAlignment(Pos.CENTER);
-        characterOptions.getChildren().addAll(characterText, characterButtons);
-        characterOptions.setAlignment(Pos.CENTER);
-        root.getChildren().add(characterOptions);
+            root.getChildren().add(canvas);
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Game 1 - La Passation");
+            primaryStage.show();
 
-        michigan.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                characterOptions.getChildren().clear();
-                playerImage = new Image("file:./img/michiganguy.png");
-                startGame();
-            }
-        });
-        illinois.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                characterOptions.getChildren().clear();
-                playerImage = new Image("file:./img/illinoisguy.png");
-                startGame();
-            }
-        });
-        zoe.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                characterOptions.getChildren().clear();
-                playerImage = new Image("file:./img/zoe.png");
-                startGame();
-            }
-        });
-        pitt.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                characterOptions.getChildren().clear();
-                playerImage = new Image("file:./img/pittguy.png");
-                startGame();
-            }
-        });
+            statusBar.setPrefWidth(WIDTH);
+            statusBar.setPadding(new Insets(10, 10, 10, 10));
+            timerText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+
+            VBox characterOptions = new VBox();
+            Text characterText = new Text("Choose your character: ");
+            characterText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+            HBox characterButtons = new HBox();
+            characterButtons.setPadding(new Insets(20, 20, 20, 20));
+            Button michigan = new Button("Michigan Guy");
+            Button illinois = new Button("Illinois Guy");
+            Button zoe = new Button("Zoe");
+            Button pitt = new Button("Pitt Guy");
+            characterButtons.setSpacing(10);
+            characterButtons.getChildren().addAll(michigan, illinois, pitt, zoe);
+            characterButtons.setAlignment(Pos.CENTER);
+            characterOptions.getChildren().addAll(characterText, characterButtons);
+            characterOptions.setAlignment(Pos.CENTER);
+
+            //characterOptions.setBackground(new Background(new BackgroundFill(Color.GRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+            root.getChildren().add(characterOptions);
+
+            michigan.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    characterOptions.getChildren().clear();
+                    playerImage = new Image("file:./img/michiganguy.png");
+                    startGame();
+                }
+            });
+            illinois.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    characterOptions.getChildren().clear();
+                    playerImage = new Image("file:./img/illinoisguy.png");
+                    startGame();
+                }
+            });
+            zoe.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    characterOptions.getChildren().clear();
+                    playerImage = new Image("file:./img/zoe.png");
+                    startGame();
+                }
+            });
+            pitt.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    characterOptions.getChildren().clear();
+                    playerImage = new Image("file:./img/pittguy.png");
+                    startGame();
+                }
+            });
+        }
     }
 
     public void startGame() {
 
         startCountdown();
-        //playMusic();
+        playMusic();
 
         for (int i = 0; i < 3; i++) {
             heartsFull[i] = new ImageView(fullHeart);
@@ -284,16 +299,18 @@ public class Board1 extends Stage {
         timeline.setOnFinished(event -> {
             primaryStage.close();
             TransitionScreens endScreen = new TransitionScreens(1);
+            wonGame = true;
             endScreen.showWinScreen();
         });
         timeline.play();
     }
 
     public void playMusic() {
-        /*String musicFile = "file:./sounds/fadeup.mp3";
+        /*String musicFile = "sounds/fadeup.mp3";
         Media sound = new Media(new File(musicFile).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(sound);
         mediaPlayer.play();*/
+        System.out.println("Playing music");
 
         /*Media sound = new Media(getClass().getResource("file:./sounds/fadeup.mp3").toExternalForm());
         MediaPlayer mediaPlayer = new MediaPlayer(sound);
@@ -301,6 +318,14 @@ public class Board1 extends Stage {
 
         //AudioClip music = new AudioClip(this.getClass().getResource("file:./sounds/fadeup.mp3").toExternalForm());
 
+    }
+
+    public boolean getWonGame() {
+        return wonGame;
+    }
+
+    public void setWonGame(boolean wonGame) {
+        this.wonGame = wonGame;
     }
 
 }

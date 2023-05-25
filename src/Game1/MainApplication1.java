@@ -11,14 +11,15 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
-
+import javafx.scene.media.*;
 import Other.TransitionScreens;
 
 public class MainApplication1 extends Pane {
 
     private Stage instrStage = new Stage();
     private Boolean startButtonClicked = false;
-
+    private Board1 board = new Board1(false);
+    private boolean wonGame = false;
 
     public MainApplication1(Stage stage) throws Exception {
 
@@ -49,12 +50,20 @@ public class MainApplication1 extends Pane {
             @Override
             public void handle(ActionEvent actionEvent) {
                 instrStage.close();
-                Board1 board = new Board1();
+                board = new Board1(true);
             }
         });
+
+        if (board.getWonGame()) {
+            wonGame = true;
+        }
     }
 
     public static void main(String[] args) {
  //       launch(args);
+    }
+
+    public boolean getWonGame() {
+        return wonGame;
     }
 }

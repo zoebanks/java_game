@@ -1,23 +1,24 @@
 import Game1.MainApplication1;
 import Game2.MainApplication2;
-import Game3.MainApplication3;
+import Other.Graduation;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.scene.Group;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.scene.text.*;
 import javafx.stage.Stage;
+//import javafx.scene.media.*;
 
-import java.util.EventListener;
 
 public class Board extends Application{
     Stage stage;
     Button[] buttons = new Button[3];
-    private int roundNum = 3;
+    private int roundNum = 2;
+
     EventHandler<ActionEvent> action = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent actionEvent) {
@@ -27,16 +28,17 @@ public class Board extends Application{
                     Thread gameThread = new Thread();
                     try {
                         MainApplication1 game1 = new MainApplication1(stage);
-                        /*if (game1.getWonGame) {
-
-                        }*/
+                        if (game1.getWonGame()) {
+                            System.out.println("Won Game 1");
+                            roundNum = 2;
+                        }
                         System.out.println("Running Main Application 1");
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                     break;
                 case "Game 2" :
-                    if (roundNum == 2 || roundNum == 3) {
+                    if (roundNum == 2) {
                         try {
                             new MainApplication2(stage);
                             System.out.println("Running Main Application 2");
@@ -48,13 +50,10 @@ public class Board extends Application{
                         System.out.println("You need to pass level 1 before proceeding");
                     }
                     break;
-                case "Game 3" :
+                case "Graduation" :
                     System.out.println("Under construction");
-                    /*try {
-                        new MainApplication3(stage);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }*/
+                    stage.close();
+                    Graduation graduation = new Graduation();
                     break;
                 default :
                     System.out.println("No way");
@@ -65,20 +64,66 @@ public class Board extends Application{
 
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
-        primaryStage.setTitle("Main Board");
+
+        StackPane root = new StackPane();
+        Text enrollmentTitle = new Text("Bienvenue!");
+        enrollmentTitle.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 30));
+        Text enrollmentDescription = new Text(
+                "\n\nYou are a study abroad student that just arrived at your new school" +
+                        "\nPlay the two mini games available to you and get to know France." +
+                        "\nOnce you feel that you have gotten the ENSEA experience," +
+                        "\nget your diploma by clicking on the \"Graduation\" button." +
+                        "\nNow, click the button below to enroll and start your semester" +
+                        "\n\nGood luck!\n\n");
+        enrollmentDescription.setTextAlignment(TextAlignment.CENTER);
+        enrollmentDescription.setFont(Font.font("verdana", FontWeight.NORMAL, FontPosture.REGULAR, 20));
+        Button startButton = new Button("Enroll");
+        startButton.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 30));
+        VBox text = new VBox(enrollmentTitle, enrollmentDescription, startButton);
+        text.setAlignment(Pos.CENTER);
+        root.getChildren().add(text);
+
+        Scene enrollmentScene = new Scene(root, 800, 800);
+        stage.setScene(enrollmentScene);
+        stage.show();
+        startButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                System.out.println("Enrollment button clicked");
+                stage.close();
+                startGame();
+            }
+        });
+
+    }
+
+    public void startGame() {
+
         StackPane pane = new StackPane();
+
+        BackgroundImage myBI= new BackgroundImage(new Image("file:./img/enseamap.png",800,800,false,true),
+                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                BackgroundSize.DEFAULT);
+        pane.setBackground(new Background(myBI));
+
+        stage.setTitle("ENSEA");
         Scene scene = new Scene(pane, 800, 800, true);
 
+        buttons[0] = new Button("Game 1");
+        buttons[0].setTranslateY(-255);
+        buttons[1] = new Button("Game 2");
+        buttons[1].setTranslateY(-100);
+        buttons[2] = new Button("Graduation");
+        buttons[2].setTranslateX(160);
+        buttons[2].setTranslateY(170);
+
         for (int i = 0; i < 3; i++){
-            buttons[i] = new Button("Game "+ (i + 1));
             buttons[i].setVisible(true);
             pane.getChildren().add(buttons[i]);
             buttons[i].setOnAction(action);
-            buttons[i].setTranslateY(i * 100);
         }
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
+        stage.setScene(scene);
+        stage.show();
     }
     public static void main(String[] args) {
         launch(args);
