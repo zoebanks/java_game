@@ -28,17 +28,19 @@ public class Board1 extends Stage {
     private static final int WIDTH = 800;
     private static final int HEIGHT = 800;
 
-    private static final double SPRITE_SIZE = 40;
-    private static final double SPRITE_SPEED = 2;
+    private static final double SPRITE_SIZE = 50;
+    private static final double SPRITE_HEIGHT = 80;
+    private static final double SPRITE_SPEED = 3;
 
-    private static final double PLAYER_SIZE = 40;
+    private static final double PLAYER_SIZE = 50;
+    private static final double PLAYER_HEIGHT = 80;
     private static final double PLAYER_SPEED = 25;
 
     private double playerX = WIDTH / 2 - PLAYER_SIZE / 2;
     private double playerY = HEIGHT - (4 * PLAYER_SIZE);
 
     private List<Sprite1> sprites;
-    private boolean playerIntersected = false;
+    //private boolean playerIntersected = false;
     private boolean gameRunning = true;
 
     private Random random = new Random();
@@ -50,7 +52,7 @@ public class Board1 extends Stage {
     private double min = 0 + SPRITE_SIZE;
 
     private int numLivesRemaining = 3;
-    private int NUM_SPRITES = 12;
+    private int NUM_SPRITES = 17;
     private int countdownSeconds = 30;
     private Text timerText = new Text("Timer: 30");
 
@@ -124,16 +126,17 @@ public class Board1 extends Stage {
                         sprite.setY(sprite.getY() + (sprite.getSpeed() * sprite.getDirection()));
                         sprite.draw(gc);
 
-                        Rectangle2D spriteRect = new Rectangle2D(sprite.getX(), sprite.getY(), SPRITE_SIZE, SPRITE_SIZE);
-                        Rectangle2D playerRect = new Rectangle2D(playerX, playerY, PLAYER_SIZE, PLAYER_SIZE);
+                        Rectangle2D spriteRect = new Rectangle2D(sprite.getX(), sprite.getY(), SPRITE_SIZE, SPRITE_HEIGHT);
+                        Rectangle2D playerRect = new Rectangle2D(playerX, playerY, PLAYER_SIZE, SPRITE_HEIGHT);
                         if (playerRect.intersects(spriteRect)) {
                             sprite.setDirection(-1);
                             sprite.setIntersected(true);
-                            sprite.setColor(Color.GREEN);
+                            sprite.setId(sprite.getId() + 4);
                         }
-                        else if (sprite.getY() > playerY) {
+                        else if (sprite.getY() > playerY - 5) {
                             sprite.setDirection(-1);
-                            sprite.setColor(Color.RED);
+                            sprite.setIntersected(false);
+                            sprite.setId(sprite.getId() + 2);
                         }
                     }
 
@@ -158,8 +161,8 @@ public class Board1 extends Stage {
                         playerX = WIDTH - PLAYER_SIZE;
                     }
 
-                    gc.setFill(Color.BLUE);
-                    gc.fillRect(playerX, playerY, PLAYER_SIZE, PLAYER_SIZE);
+                    gc.drawImage(new Image("file:./img/michiganguy.png"), playerX, playerY, PLAYER_SIZE, PLAYER_HEIGHT);
+
                 }
             }
         }.start();
@@ -174,13 +177,8 @@ public class Board1 extends Stage {
 
         for (int i = 0; i < NUM_SPRITES; i++) {
             startX = SPRITE_SIZE / 2 + random_num_gen();
-            Color spriteColor = Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256));
-            if (spriteColor == Color.RED || spriteColor == Color.GREEN) {
-                spriteColor = Color.GRAY;
-            }
-            Sprite1 sprite = new Sprite1(startX, startY, SPRITE_SPEED, spriteColor, i, 1);
+            Sprite1 sprite = new Sprite1(startX, startY, SPRITE_SPEED, i, 1);
             sprites.add(sprite);
-
             startY -= SPRITE_SIZE * staggeredDelay;
         }
     }
